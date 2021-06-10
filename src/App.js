@@ -2,6 +2,9 @@
 import './App.css';
 import UsersList from './components/users_list';
 
+//crm api
+import getERPdataForCharts10062021 from './components/get_crm_data';
+
 //learning rureactjsorg (
 import ShoppingList from './components/rureactjsorg_shopping_list';
 import Game from './components/rureactjsorg_ticktacktoe';
@@ -13,8 +16,6 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 const axios = require('axios');
 // ) charts
-
-
 
 let options = {
   title: {
@@ -68,6 +69,7 @@ const App = () => {
       {/* learning rureactjsorg ( */}
       <ShoppingList name = {'hello world'} list ={ users }/>
       <Game />
+      {alert('hello')      }
       {/* learning rureactjsorg ) */}
   </div>
   );

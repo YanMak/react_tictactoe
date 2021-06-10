@@ -53,10 +53,12 @@ const Game = () => {
   const updateSquaresWithCurrentMark = (i) => {
     const squares_ = squares.slice();
     squares_[i] = currentPlayerMark();
+    //alert('updateSquaresWithCurrentMark squares_ '+squares_);
     setSquares(squares_);
+    //alert('updateSquaresWithCurrentMark squares '+squares); !!!: why !squares===squares_ after setSquares(squares_); 
   }
 
-  // rective prop 'history' and its update func
+  // reactive prop 'history' and its update func
   const [history, setHistory] = useState([{
         squares: Array(9).fill(null),
       }]);    
@@ -64,7 +66,9 @@ const Game = () => {
   const addToHistory = () => {
     let history_ = history.slice();
     history_.push({squares: squares});
+    alert('addToHistory history_ '+JSON.stringify(history_));
     setHistory(history_);
+    alert('addToHistory history '+JSON.stringify(history)); // same question as in 58 row. setHistory didnt make history same as history_
   }
 
   // reactive prop 'xIsNext' and related functions
@@ -83,7 +87,9 @@ const Game = () => {
     if (calculateWinner(history[history.length-1].squares)) {
       return;// do nothing couse game finished
     }
+    //alert('bfo '+squares);
     updateSquaresWithCurrentMark(i);// setting current mark
+    //alert('aft '+squares);
     changePlayer(); //changing current player
     addToHistory(squares);
   }
@@ -98,14 +104,22 @@ const Game = () => {
 
   const moves = history.map((step, move) => {
       const desc = move ?
-        'Перейти к ходу #' + move :
-        'К началу игры';
+        'Перейти к ходу #' + move + ' ' + + JSON.stringify(step) :
+        'К началу игры' + JSON.stringify(step);
       return (
         <li>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => jumpToStep(move)}>{desc}</button>
         </li>
       );
   });
+
+  const [stepNumber, setStepNumber] = useState(0);
+  const jumpToStep = (step) => {
+    setStepNumber(step);
+    setXIsNext((step % 2) === 0);
+    getSquaresfromHistory(step);
+  };
+  const getSquaresfromHistory = (step) =>( setSquares(history[step].squares)  )
 
   /* pass to a child element these funcs: 
     setSquares addToHistory changePlayer currentPlayerMark getWinner
@@ -126,6 +140,7 @@ const Game = () => {
     </div>
     <div className="game-info">
       <div>{status}</div>
+      <div>history: {JSON.stringify(history)}</div>
       <ol>{moves}</ol>
     </div>
   </div>

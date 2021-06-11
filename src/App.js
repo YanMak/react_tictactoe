@@ -34,7 +34,7 @@ const GetChartData = async (options) => {
   for (let i = 0 ; i<response.data.length; i++){
     options.series[0].data.push(i);      
   }
-  //alert(options.series[0].data);
+  alert('options.series[0].data: ' + options.series[0].data);
   //return options;
 };
 
@@ -51,9 +51,16 @@ const App = () => {
     setName('');
   };
 
+  //chart data
+  let data = getERPdataForCharts10062021();//error: unexpected reserved word await. i.e. i cant use await here
+  const [chartData, setChartData] = useState(data);
+  //alert(chartData);
   //options = GetChartData();
+  alert('options bfo GetChartData ' + options);
   GetChartData(options);
-  //alert(options);
+  alert('options aft GetChartData ' + options);
+  //getERPdataForCharts10062021();
+  alert(options);
   //alert(options.series[0].data);
 
   return (
@@ -64,12 +71,12 @@ const App = () => {
       />
       <button onClick={onClick}>add name</button>
       <input value={ name } onChange={ (e) => setName(e.target.value) } />
+      
       <UsersList list={ users } />
       
       {/* learning rureactjsorg ( */}
       <ShoppingList name = {'hello world'} list ={ users }/>
       <Game />
-      {alert('hello')      }
       {/* learning rureactjsorg ) */}
   </div>
   );

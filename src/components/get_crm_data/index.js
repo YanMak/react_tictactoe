@@ -1,12 +1,13 @@
-export const getERPdataForCharts10062021 = () => {
-  urlERP = "http://89.223.93.142:3001/lists";
+export const getERPdataForCharts10062021 = async() => {
+  const urlERP = "http://89.223.93.142:3001/lists";
 
   let response = await fetch(urlERP);
   let incomingData = [];
 
   if (response.ok) { // если HTTP-статус в диапазоне 200-299
       incomingData = await response.json();
-      alert(incomingData);
+      //alert(JSON.stringify(incomingData));
+      return incomingData;
       //alert(incomingData);
       //let prep = await getERPdataForCharts(incomingData);
       //document.getElementById("expressQueryData1").innerHTML = JSON.stringify(prep);
@@ -29,4 +30,4 @@ const UsersList = ({ list }) => {
   );
 } 
 
-export default UsersList;
+export default getERPdataForCharts10062021;

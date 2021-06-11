@@ -3,14 +3,34 @@ import './App.css';
 import UsersList from './components/users_list';
 
 //crm api
-import getERPdataForCharts10062021 from './components/get_crm_data';
+import getERPdataForCharts10062021 from './data/api';
+
+
+const App = () => {
+  const [data, setData] = useState(null);
+  const [page, setPage] = useState(1);
+
+  useEffect(async () => {
+    const res = await getERPdataForCharts10062021(page);
+    setData(res.data);
+  }, [page]);
+
+  return (
+    <div>
+      <button onClick={() => setPage(page + 1)}>Next</button>
+      {data ? data.map((val) => (<div>val</div>)) : null}
+    </div>
+  );
+};
+
+
 
 //learning rureactjsorg (
 import ShoppingList from './components/rureactjsorg_shopping_list';
 import Game from './components/rureactjsorg_ticktacktoe';
 // )
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // charts (
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'

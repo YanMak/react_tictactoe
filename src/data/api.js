@@ -20,14 +20,4 @@ export const getERPdataForCharts10062021 = async() => {
   }
 } 
 
-
-const UsersList = ({ list }) => {
-  
-  return (
-  <ul>
-    { list.map(name => (<li>{name}</li>)) }
-  </ul>
-  );
-} 
-
 export default getERPdataForCharts10062021;

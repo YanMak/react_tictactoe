@@ -1,21 +1,23 @@
 import { useState } from 'react';
 
-const Square = (prop) => {
- 
-  const onClick = () => {
-    prop.onClick();      
+const Square = ({
+  onClick,
+  value,
+}) => {
+  const onBtnClick = () => {
+    onClick();
   };
 
   return (
-    <button className="square" onClick={onClick}>
-    {/* show local {value} */}
-    {prop.value}
+    <button className="square" onClick={onBtnClick}>
+      {/* show local {value} */}
+      {value}
     </button>
-  )
-  
+  );
 };  
 
 const Board = (prop) => {
+  //const SIZE = 9;
 
   const renderSquare = (i) => (
   
@@ -49,26 +51,38 @@ const Board = (prop) => {
 const Game = () => {
 
   // game fiels squares
-  const [squares, setSquares] = useState(Array(9).fill(undefined));
+  const [squares, setSquares] = useState(Array(9).fill(null));
   const updateSquaresWithCurrentMark = (i) => {
-    const squares_ = squares.slice();
-    squares_[i] = currentPlayerMark();
-    //alert('updateSquaresWithCurrentMark squares_ '+squares_);
-    setSquares(squares_);
+    // const squares_ = squares.slice();
+    // squares_[i] = currentPlayerMark();
+    // //alert('updateSquaresWithCurrentMark squares_ '+squares_);
+    // setSquares(squares_);
     //alert('updateSquaresWithCurrentMark squares '+squares); !!!: why !squares===squares_ after setSquares(squares_); 
+    //console.log('updateSquaresWithCurrentMark squares', squares, 3, 5);
+    setSquares(
+      squares.map((val, idx) => {
+        if (idx === i) return currentPlayerMark();
+        return val;
+      })
+    );
   }
 
   // reactive prop 'history' and its update func
   const [history, setHistory] = useState([{
-        squares: Array(9).fill(null),
-      }]);    
+    squares: Array(9).fill(null),
+  }]);    
 
   const addToHistory = () => {
-    let history_ = history.slice();
-    history_.push({squares: squares});
-    alert('addToHistory history_ '+JSON.stringify(history_));
-    setHistory(history_);
-    alert('addToHistory history '+JSON.stringify(history)); // same question as in 58 row. setHistory didnt make history same as history_
+    // const history_ = history.slice();
+    // history_.push({squares: squares});
+    // alert('addToHistory history_ '+JSON.stringify(history_));
+    // setHistory(history_);
+    // alert('addToHistory history '+JSON.stringify(history)); // same question as in 58 row. setHistory didnt make history same as history_
+  
+    setHistory([
+      ...history,
+      { squares },
+    ]);
   }
 
   // reactive prop 'xIsNext' and related functions
@@ -77,8 +91,8 @@ const Game = () => {
   const currentPlayerMark = () => (xIsNext ? 'X' : 'O')
     
   const getWinner = () => {
-    const currentHistorySlice = history[history.length-1].squares;
-    return calculateWinner( currentHistorySlice );  
+    const currentHistorySlice = history[history.length - 1].squares;
+    return calculateWinner(currentHistorySlice);  
   }
 
   // actions on putting player's mark in game field
@@ -94,18 +108,20 @@ const Game = () => {
     addToHistory(squares);
   }
 
-  const winner = getWinner();
-  let status = '';
-    if (winner) {
-      status = 'Выиграл ' + winner;
-    } else {
-      status = 'Следующий ход: ' + currentPlayerMark();
-    }
+  // const winner = getWinner();
+  // let status = '';
+  //   if (winner) {
+  //     status = 'Выиграл ' + winner;
+  //   } else {
+  //     status = 'Следующий ход: ' + currentPlayerMark();
+  //   }
+  
+  const status = getWinner() ? `Выиграл ${winner}` : `Следующий ход: ${currentPlayerMark()}`; 
 
   const moves = history.map((step, move) => {
-      const desc = move ?
-        'Перейти к ходу #' + move + ' ' + + JSON.stringify(step) :
-        'К началу игры' + JSON.stringify(step);
+      const desc = move
+        ? 'Перейти к ходу #' + move + ' ' + + JSON.stringify(step)
+        : 'К началу игры' + JSON.stringify(step);
       return (
         <li>
           <button onClick={() => jumpToStep(move)}>{desc}</button>
@@ -131,35 +147,36 @@ const Game = () => {
 */
 
   return (
-  <div className="game">
-    <div className="game-board">
-      <Board 
-        squares={squares} 
-        onClick={onClickInField}
-      />
+    <div className="game">
+      <div className="game-board">
+        <Board 
+          squares={squares} 
+          onClick={onClickInField}
+        />
+      </div>
+      <div className="game-info">
+        <div>{status}</div>
+        <div>history: {JSON.stringify(history)}</div>
+        <ol>{moves}</ol>
+      </div>
     </div>
-    <div className="game-info">
-      <div>{status}</div>
-      <div>history: {JSON.stringify(history)}</div>
-      <ol>{moves}</ol>
-    </div>
-  </div>
-  )
+  );
 }
 
+const LINES = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
 function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
+  for (let i = 0; i < LINES.length; i++) {
+    const [a, b, c] = LINES[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }

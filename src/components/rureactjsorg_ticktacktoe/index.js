@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 const Square = ({
   onClick,
@@ -90,10 +90,14 @@ const Game = () => {
   const changePlayer = () => (setXIsNext(!xIsNext));// change X/O
   const currentPlayerMark = () => (xIsNext ? 'X' : 'O')
     
-  const getWinner = () => {
+  // const getWinner = () => {
+  //   const currentHistorySlice = history[history.length - 1].squares;
+  //   return calculateWinner(currentHistorySlice);
+  // }
+  const winner = useMemo(() => {
     const currentHistorySlice = history[history.length - 1].squares;
-    return calculateWinner(currentHistorySlice);  
-  }
+    return calculateWinner(currentHistorySlice);
+  }, [history]);
 
   // actions on putting player's mark in game field
   const onClickInField = (i) =>{
